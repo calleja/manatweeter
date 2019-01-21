@@ -1,0 +1,24 @@
+twitter API resources
+
+twitter developer background data:
+https://developer.twitter.com/en/docs/basics/getting-started
+
+Oauth authentication:
+https://developer.twitter.com/en/docs/basics/authentication/overview/oauth
+
+Twitter Authentication access tokens:
+https://developer.twitter.com/en/docs/basics/authentication/guides/access-tokens
+
+tweepy api status object json structure:
+https://gist.github.com/dev-techmoe/ef676cdd03ac47ac503e856282077bf2
+
+tweepy cursor:
+https://tweepy.readthedocs.io/en/3.7.0/cursor_tutorial.html
+
+tweepy api methods:
+https://tweepy.readthedocs.io/en/3.7.0/api.html
+
+Twitter streaming API
+a) http://www.dealingdata.net/2016/07/23/PoGo-Series-Tweepy/
+b) https://www.programcreek.com/python/example/86213/tweepy.Stream
+c) https://www.dataquest.io/blog/streaming-data-python/
