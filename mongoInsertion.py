@@ -10,7 +10,7 @@ Once tweets are stored, expanded urls (twitter naming convention) are retrieved/
 """
 
 import pymongo
-import pandas
+import pandas as pd
 from bson.objectid import ObjectId
 
 #connect to mongo instance
@@ -34,6 +34,7 @@ h[67].keys()
 #QUERYING TWEETS in MONGO
 #attempt to search by objectID ... ObjectId("5c4cf54faf41c1250e094b2f")
 single = db.tweets.find_one({"_id": ObjectId("5c4cf54faf41c1250e094b2f")})
+single
 single['expanded_url']
 #with the expanded_url in hand, attempt to download the text from the url
 
@@ -50,3 +51,30 @@ article.nlp() #subsequent attributes this creates: summary and keywords
 article.summary
 #this may be a word frequency hierarchy
 article.keywords
+
+#STRATEGY: ideally each of the attributes and results of the nlp is also stored in the database, aside from author, date, source... can also manually build a 
+#variables to mine from each article:
+#word frequency/histogram
+
+#Often a simple bigram approach is better than a 1-gram bag-of-words model for tasks like documentation classification.
+
+#ARTICLE COLLECTION CREATION
+#iterate through each document in the tweet collection and if there is an expanded url, use the Article library to extract the text... will also need to store the tweet document ID in the article document
+
+#only retrieve documents where expanded_url != None
+tweet_cursor = db.tweets.find({'expanded_url': {'$ne': None}})[1:20]
+for doc in tweet_cursor:
+    article_url = doc['expanded_url']
+    if article_url is not None:
+        extract_article_tgt_data(article_url)
+    doc['_id']
+    doc['tweet_id']
+    doc['user_name']
+   
+#extract text from this article    
+def extract_article_tgt_data(urlInput):
+    article = Article(urlInput)
+    article.download()
+    article.parse()
+    return(texty = article.text)
+    
