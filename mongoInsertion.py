@@ -3,7 +3,10 @@
 """
 Created on Sat Jan 26 17:21:39 2019
 
-@author: lechuza
+Tweets are stored via inserting into a mongodb. 
+Connection to the mongodb is established, a collection is either referenced or created, then all tweets are inserted via iterable batch form.
+
+Once tweets are stored, expanded urls (twitter naming convention) are retrieved/queried in an article text downloading workflow. Article text/html is then stored in a different collection within the mongodb along with a reference ID to the original tweet.
 """
 
 import pymongo
@@ -14,12 +17,12 @@ from bson.objectid import ObjectId
 client = pymongo.MongoClient('localhost', 21999)
 #connect to a database... there is also a collections level
 db = client.manatwitter
-#collections are created upon initial assertion into them at run time
-db.tweets.insert_
+#collections are created upon initial insertion into them at run time
 
-#takes an iterable as argument... returns an instance of InsertManyResult from which I can query (as an attribute) the list of _ids inserted into the collection
+#db.collections.insert_many() takes an iterable as argument... returns an instance of InsertManyResult from which I can query (as an attribute) the list of _ids inserted into the collection
 db.tweets.insert_many(h)
 
+#test to learn the nature of all the keys
 h[67].keys()
 
 'full_text', 'user_name', 'expanded_url', 'creation', 'screenname', 'dateDict', 'hashtags'
