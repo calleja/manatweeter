@@ -25,20 +25,28 @@ db.tweets.insert_many(h)
 #test to learn the nature of all the keys
 h[67].keys()
 
-'full_text', 'user_name', 'expanded_url', 'creation', 'screenname', 'dateDict', 'hashtags'
+#keys of the mongo document: ['full_text', 'user_name', 'expanded_url', 'creation', 'screenname', 'dateDict', 'hashtags']
 
-#iterate through every single document within the tweets collection, extract the expanded_url text (if there is one), then download that text and store the text into a different collection - the 'articles' collection
+#iterate through every single document within the tweets collection, extract the expanded_url text (if there is one), then download that text and store the text into a different collection - the 'articles' collection within same db
 
 #treat the collection as an iterable and index for 'expanded_url'
-db.tweets
-['expanded_url']
 
+#QUERYING TWEETS in MONGO
 #attempt to search by objectID ... ObjectId("5c4cf54faf41c1250e094b2f")
 single = db.tweets.find_one({"_id": ObjectId("5c4cf54faf41c1250e094b2f")})
 single['expanded_url']
 #with the expanded_url in hand, attempt to download the text from the url
 
 from newspaper import Article
-import newspaper
+#walk through installation of all dependencies: https://newspaper.readthedocs.io/en/latest/
+import nltk
 
-text = 
+article = Article(single['expanded_url'])
+article.download()
+article.parse()
+texty = article.text
+nltk.download() # will display a dialogue box, click on download all nlp library/packages
+article.nlp() #subsequent attributes this creates: summary and keywords
+article.summary
+#this may be a word frequency hierarchy
+article.keywords
