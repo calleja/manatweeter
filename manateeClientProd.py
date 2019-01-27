@@ -13,6 +13,7 @@ Created on Sun Jan 20 14:06:20 2019
 
 import tweepy
 import json
+import itertools
 
 #consumer keys
 #there are two classes of API keys and secrets: application/consumer level, which is associated with the application and access level, which verifies the user account associated with the app and also provides user verification tokens for API endpoint activity
@@ -82,19 +83,21 @@ def extraction(listOfDocs):
             expanded_url = None
         try:
             if len(first_tgt['entities']['hashtags']) > 0:
-                hashtags = first_tgt['entities']['hashtags']
+                #list comprehension to extract only the text field of hashtags list
+                hashtags = [i['text'] for i in first_tgt['entities']['hashtags']]
             else:
                 hashtags = None
         except IndexError:
             hashtags = None
         creation = first_tgt['created_at']
+        tweet_id = first_tgt['id']
         screenname = first_tgt['user']['screen_name']
         datedata = first_tgt['created_at']
         #parse date
         dateDict = extractDate(datedata)
         
         #compile dictionary
-        final_dict = {'full_text': full_text, 'user_name': user_name, 'expanded_url': expanded_url, 'creation': creation, 'screenname': screenname, 'dateDict': dateDict, 'hashtags': hashtags}
+        final_dict = {'full_text': full_text, 'user_name': user_name, 'expanded_url': expanded_url, 'creation': creation, 'screenname': screenname, 'dateDict': dateDict, 'hashtags': hashtags, 'tweet_id': tweet_id}
         #print the compiled data as a test
         lista.append(final_dict)
     return(lista)
@@ -119,3 +122,6 @@ old_list[9]
 scnd_tgt = json.loads(json.dumps(old_list[9]._json))
 scnd_tgt.keys()
 scnd_tgt['entities']
+
+[i['text'] for i in h[9]['hashtags']]
+h[9]['hashtags']
