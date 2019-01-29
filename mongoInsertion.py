@@ -12,6 +12,9 @@ Once tweets are stored, expanded urls (twitter naming convention) are retrieved/
 import pymongo
 import pandas as pd
 from bson.objectid import ObjectId
+from newspaper import Article
+#walk through installation of all dependencies: https://newspaper.readthedocs.io/en/latest/
+import nltk
 
 #connect to mongo instance
 client = pymongo.MongoClient('localhost', 21999)
@@ -38,9 +41,6 @@ single
 single['expanded_url']
 #with the expanded_url in hand, attempt to download the text from the url
 
-from newspaper import Article
-#walk through installation of all dependencies: https://newspaper.readthedocs.io/en/latest/
-import nltk
 
 article = Article(single['expanded_url'])
 article.download()
@@ -52,29 +52,46 @@ article.summary
 #this may be a word frequency hierarchy
 article.keywords
 
-#STRATEGY: ideally each of the attributes and results of the nlp is also stored in the database, aside from author, date, source... can also manually build a 
+#STRATEGY: ideally each of the attributes and results of the nlp is also stored in the database, aside from author, date, source... can also manually build a tldf rank
 #variables to mine from each article:
 #word frequency/histogram
 
 #Often a simple bigram approach is better than a 1-gram bag-of-words model for tasks like documentation classification.
 
 #ARTICLE COLLECTION CREATION
-#iterate through each document in the tweet collection and if there is an expanded url, use the Article library to extract the text... will also need to store the tweet document ID in the article document
+#iterate through each document in the 'tweet' collection and if there is an expanded url, use the newspaper.Article library to extract the text... will also need to store the tweet document ID in the article document to facilitate "joins"
 
 #only retrieve documents where expanded_url != None
 tweet_cursor = db.tweets.find({'expanded_url': {'$ne': None}})[1:20]
-for doc in tweet_cursor:
-    article_url = doc['expanded_url']
-    if article_url is not None:
-        extract_article_tgt_data(article_url)
-    doc['_id']
-    doc['tweet_id']
-    doc['user_name']
-   
+
 #extract text from this article    
 def extract_article_tgt_data(urlInput):
     article = Article(urlInput)
     article.download()
     article.parse()
-    return(texty = article.text)
+    return(article.text)
+    
+    
+def insert_news_doc(document):
+    #ensure there is no pre-existing record in the collection
+    
+test_lista = []    
+for doc in tweet_cursor:
+    #iterate through the urls of each reference article from the tweets, build a document that includes the full text of the article and insert the document into a collection... best practice would be to create an index on this field in the Article collection
+    article_url = doc['expanded_url']
+    if article_url is not None:
+        #create a new document, this will be the content of the Article collection documents
+        art_doc = {}
+        #previously defined function
+        art_doc['article_text'] = extract_article_tgt_data(article_url)
+        art_doc['_id'] = doc['_id']
+        art_doc['tweet_id'] = doc['tweet_id']
+        art_doc['user_name'] = doc['user_name']
+        #insert_news_doc(doc)
+        test_lista.append(art_doc)
+    else:
+        next
+    
+#test the above
+    
     

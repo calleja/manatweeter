@@ -1,6 +1,9 @@
 use manatwitter
 db.getCollectionNames()
-db.tweets.find()fa
+db.tweets.find().limit(3)
 
 #delete the collection
 db.tweets.remove({})
+
+db.tweets.find().count()
+db.tweets.find({'expanded_url':{$ne:null}}).count() '117/140
