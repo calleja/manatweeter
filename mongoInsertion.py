@@ -71,16 +71,12 @@ def extract_article_tgt_data(urlInput):
     article.parse()
     return(article.text)
     
-    
-def insert_news_doc(document):
-    #ensure there is no pre-existing record in the collection
-    
 test_lista = []    
 for doc in tweet_cursor:
-    #iterate through the urls of each reference article from the tweets, build a document that includes the full text of the article and insert the document into a collection... best practice would be to create an index on this field in the Article collection
+    #iterate through the urls of each reference article from the tweets, build a document that includes the full text of the article (acquired via an auto scraping library)
     article_url = doc['expanded_url']
     if article_url is not None:
-        #create a new document, this will be the content of the Article collection documents
+        #create a new document, this will be stored in the 'Article' collection 
         art_doc = {}
         #previously defined function
         art_doc['article_text'] = extract_article_tgt_data(article_url)
@@ -92,6 +88,22 @@ for doc in tweet_cursor:
     else:
         next
     
-#test the above
+db.collection_names()
+test_lista[9]['tweet_id']
+
+#returns a cursor object
+db.articles.find({'tweet_id': test_lista[9]['tweet_id']}).count()
+
+#insert the "article" document into the 'articles' collection of the database; first ensure there is no pre-existing record
+def insert_news_doc(document):
+    #ensure there is no pre-existing record in the collection
+    if db.articles.find({'tweet_id': document['tweet_id']}).count() == 0:
+        print('inserting article document')
+        db.articles.insert_one(document)
+    else: 
+        print(db.articles.find({'tweet_id': document['tweet_id']}).count())
+        
+for i in test_lista:
+    insert_news_doc(i)     
     
     
